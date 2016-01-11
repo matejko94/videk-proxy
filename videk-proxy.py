@@ -6,24 +6,28 @@ from urlparse import urlparse, parse_qs
 from videk_rest_client import Videk
 from datetime import datetime
 
+server_port = 8080
+videk_api_url = "http://localhost:3000/api"
+videk_token = "yc92PyLkeBUyqN1msDan6YOCl+IT2u9M"
+
 def main():
-	PORT_NUMBER = 8080
 
 	try:
-		server = HTTPServer(('', PORT_NUMBER), myHandler)
-		print "Started http server on port " + str(PORT_NUMBER)
+		server = HTTPServer(('', server_port), requestHandler)
+		print "Started http server on port " + str(server_port)
 		server.serve_forever()
 
 	except KeyboardInterrupt:
 		print "Shutting down the server"
 		server.socket.close()
 
-class myHandler(BaseHTTPRequestHandler):
+class requestHandler(BaseHTTPRequestHandler):
 
 	def upload_data(self, cluster, node, sensor_t, \
 					sensor_q, sensor_u, measurements):
 
-		x = Videk('yc92PyLkeBUyqN1msDan6YOCl+IT2u9M')
+		x = Videk(videk_token)
+		x.api_url = videk_api_url
 
 		cluster_id = x.getClusterID(cluster)
 		if cluster_id == None:
