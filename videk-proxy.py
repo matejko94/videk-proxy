@@ -96,7 +96,7 @@ class requestHandler(BaseHTTPRequestHandler):
 			videk_json = []
 			for t in tarray:
 				sensor = json.loads(self.sensor.get(t))
-				m[0]["v"] = int(darray[i])
+				m[0]["v"] = float(darray[i])
 				sensor["m"] = m
 				m = [{"t":params["ts"][0],"lat":params["lat"][0], \
 					"lon":params["lon"][0],"v":""}]
