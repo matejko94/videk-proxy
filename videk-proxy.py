@@ -99,10 +99,9 @@ class requestHandler(BaseHTTPRequestHandler):
 				"lon":params["lon"][0],"v":""}
 			m_a = []
 			videk_json = []
-			i = 0
-			for t in tarray:
+			for t, c in zip(tarray, sensor_csv):
 				sensor = json.loads(self.sensor.get(t))
-				for sv in sensor_csv[i]:
+				for sv in c:
 					m["v"] = float(sv)
 					m_a.append(m)
 					m = {"t":params["ts"][0],"lat":params["lat"][0], \
@@ -110,7 +109,6 @@ class requestHandler(BaseHTTPRequestHandler):
 				sensor["m"] = m_a
 				videk_json.append(sensor)
 				m_a = []
-				i = i + 1
 
 			data = videk_json
 			for sensor in data:
