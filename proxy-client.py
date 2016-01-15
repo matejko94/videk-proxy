@@ -26,7 +26,7 @@ table_data = {"tb":s}
 t = requests.post(url_t, data=json.dumps(table_data)).text
 print t
 
-d = "11,22,33.9"
+d = "1,2,3\n4,5,6\n7,8,9.122"
 time = str(int(time.time()))
 url_d = url_d + "?tb=" + t + "&ts=" + time + \
 	"&lat=46.056947" + "&lon=14.505751"

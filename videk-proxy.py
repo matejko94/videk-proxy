@@ -1,6 +1,9 @@
 #!/usr/bin/python
 
 import json
+import csv
+import StringIO
+import numpy as np
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from urlparse import urlparse, parse_qs
 from videk_rest_client import Videk
@@ -33,17 +36,17 @@ class requestHandler(BaseHTTPRequestHandler):
 		x = Videk(videk_token)
 		x.api_url = videk_api_url
 
-		cluster_id = x.getClusterID(cluster)
+		cluster_id = str(x.getClusterID(cluster))
 		if cluster_id == None:
 			x.createCluster(cluster)
 			cluster_id = x.getClusterID(cluster)
 
-		node_id = x.getNodeID(node)
+		node_id = str(x.getNodeID(node))
 		if node_id == None:
 			x.createNode(node, cluster_id)
 			node_id = x.getNodeID(node)
 
-		sensor_id = x.getSensorID(node, sensor_t, sensor_q)
+		sensor_id = str(x.getSensorID(node, sensor_t, sensor_q))
 		if sensor_id == None:
 			x.createSensor(node_id, sensor_t, sensor_q, sensor_u)
 			sensor_id = x.getSensorID(node, sensor_t, sensor_q)
@@ -88,23 +91,28 @@ class requestHandler(BaseHTTPRequestHandler):
 			self.end_headers()
 			tcsv = json.loads(self.table.get(params["tb"][0])).get("tb")
 			tarray = tcsv.split(",")
-			darray = content.split(",")
+			f = StringIO.StringIO(content)
+			reader = csv.reader(f, delimiter=',')
+			sensor_csv = np.array(list(reader)).T
 
-			i = 0
-			m = [{"t":params["ts"][0],"lat":params["lat"][0], \
-				"lon":params["lon"][0],"v":""}]
+			m = {"t":params["ts"][0],"lat":params["lat"][0], \
+				"lon":params["lon"][0],"v":""}
+			m_a = []
 			videk_json = []
+			i = 0
 			for t in tarray:
 				sensor = json.loads(self.sensor.get(t))
-				m[0]["v"] = float(darray[i])
-				sensor["m"] = m
-				m = [{"t":params["ts"][0],"lat":params["lat"][0], \
-					"lon":params["lon"][0],"v":""}]
+				for sv in sensor_csv[i]:
+					m["v"] = float(sv)
+					m_a.append(m)
+					m = {"t":params["ts"][0],"lat":params["lat"][0], \
+						"lon":params["lon"][0],"v":""}
+				sensor["m"] = m_a
 				videk_json.append(sensor)
+				m_a = []
 				i = i + 1
 
 			data = videk_json
-
 			for sensor in data:
 				cluster = sensor["c"]
 				node = sensor["n"]
