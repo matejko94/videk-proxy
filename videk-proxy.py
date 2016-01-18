@@ -123,5 +123,10 @@ class requestHandler(BaseHTTPRequestHandler):
 			self.wfile.write("done")
 			return
 
+		self.send_response(404)
+		self.end_headers()
+		self.wfile.write("Resource not found!")
+		return
+
 if __name__ == "__main__":
 	main()
