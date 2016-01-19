@@ -36,17 +36,17 @@ class requestHandler(BaseHTTPRequestHandler):
 		x = Videk(videk_token)
 		x.api_url = videk_api_url
 
-		cluster_id = str(x.getClusterID(cluster))
+		cluster_id = x.getClusterID(cluster)
 		if cluster_id == None:
 			x.createCluster(cluster)
 			cluster_id = x.getClusterID(cluster)
 
-		node_id = str(x.getNodeID(node))
+		node_id = x.getNodeID(node)
 		if node_id == None:
 			x.createNode(node, cluster_id)
 			node_id = x.getNodeID(node)
 
-		sensor_id = str(x.getSensorID(node, sensor_t, sensor_q))
+		sensor_id = x.getSensorID(node, sensor_t, sensor_q)
 		if sensor_id == None:
 			x.createSensor(node_id, sensor_t, sensor_q, sensor_u)
 			sensor_id = x.getSensorID(node, sensor_t, sensor_q)
