@@ -22,7 +22,7 @@ s3 = requests.post(url_s, data=json.dumps(sensor_3)).text
 s = s1+","+s2+","+s3
 print s
 
-table_data = {"tb":s}
+table_data = {"tb":str(s)}
 t = requests.post(url_t, data=json.dumps(table_data)).text
 print t
 
