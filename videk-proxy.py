@@ -100,7 +100,13 @@ class requestHandler(BaseHTTPRequestHandler):
 			m_a = []
 			videk_json = []
 			for t, c in zip(tarray, sensor_csv):
-				sensor = json.loads(self.sensor.get(t))
+				s_id = self.sensor.get(t)
+				if s_id != "null":
+					sensor = json.loads(s_id)
+				else:
+					self.wfile.write("Error: No such sensor!")
+					return
+
 				for sv in c:
 					m["v"] = float(sv)
 					m_a.append(m)
