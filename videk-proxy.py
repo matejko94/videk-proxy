@@ -89,7 +89,14 @@ class requestHandler(BaseHTTPRequestHandler):
 		if resource == "/data":
 			self.send_response(200)
 			self.end_headers()
-			tcsv = json.loads(self.table.get(params["tb"][0])).get("tb")
+
+			t_id = self.table.get(params["tb"][0])
+			if t_id != "null":
+				tcsv = json.loads(t_id).get("tb")
+			else:
+				self.wfile.write("Error: No such table!")
+				return
+
 			tarray = tcsv.split(",")
 			f = StringIO.StringIO(content)
 			reader = csv.reader(f, delimiter=',')
