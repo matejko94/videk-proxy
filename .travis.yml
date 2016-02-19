@@ -7,5 +7,7 @@ install:
   - pip install pymongo
 services:
   - mongodb
-before_script: python videk-proxy.py &
+before_script:
+  - python videk-proxy.py &
+  - sleep 5
 script: python proxy-client.py
