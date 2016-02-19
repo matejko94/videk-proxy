@@ -93,7 +93,11 @@ class requestHandler(BaseHTTPRequestHandler):
 			if t_id != "null":
 				tcsv = json.loads(t_id).get("tb")
 			else:
-				self.wfile.write("Error: No such table!")
+				message = "Error: No such table!"
+				self.send_response(200)
+				self.send_header('Content-Length', len(message))
+				self.end_headers()
+				self.wfile.write(message)
 				return
 
 			tarray = tcsv.split(",")
@@ -110,7 +114,11 @@ class requestHandler(BaseHTTPRequestHandler):
 				if s_id != "null":
 					sensor = json.loads(s_id)
 				else:
-					self.wfile.write("Error: No such sensor!")
+					message = "Error: No such sensor!"
+					self.send_response(200)
+					self.send_header('Content-Length', len(message))
+					self.end_headers()
+					self.wfile.write(message)
 					return
 
 				for sv in c:
