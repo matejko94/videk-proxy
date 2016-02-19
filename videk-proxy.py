@@ -73,23 +73,22 @@ class requestHandler(BaseHTTPRequestHandler):
 		params = parse_qs(url.query)
 
 		if resource == "/reg-s":
-			self.send_response(200)
-			self.end_headers()
 			message = self.sensor.store(content)
+			self.send_response(200)
+			self.send_header('Content-Length', len(str(message)))
+			self.end_headers()
 			self.wfile.write(message)
 			return
 
 		if resource == "/reg-t":
-			self.send_response(200)
-			self.end_headers()
 			message = self.table.store(content)
+			self.send_response(200)
+			self.send_header('Content-Length', len(str(message)))
+			self.end_headers()
 			self.wfile.write(message)
 			return
 
 		if resource == "/data":
-			self.send_response(200)
-			self.end_headers()
-
 			t_id = self.table.get(params["tb"][0])
 			if t_id != "null":
 				tcsv = json.loads(t_id).get("tb")
@@ -133,12 +132,18 @@ class requestHandler(BaseHTTPRequestHandler):
 				measurements = sensor["m"]
 				self.upload_data(cluster, node, s_t, s_q, s_u, measurements)
 
-			self.wfile.write("done")
+			message = "done"
+			self.send_response(200)
+			self.send_header('Content-Length', len(message))
+			self.end_headers()
+			self.wfile.write(message)
 			return
 
+		message = "Resource not found!"
 		self.send_response(404)
+		self.send_header('Content-Length', len(message))
 		self.end_headers()
-		self.wfile.write("Resource not found!")
+		self.wfile.write(message)
 		return
 
 if __name__ == "__main__":
