@@ -10,8 +10,9 @@ install:
 services:
   - mongodb
 before_script:
-  - git clone git@github.com:sensorlab/SensorManagementSystem.git
+  - git clone https://github.com/sensorlab/SensorManagementSystem.git
   - cd SensorManagementSystem/server
+  - sudo npm install
   - nodejs top.js &
   - cd ../..
   - python videk-proxy.py &
