@@ -19,7 +19,6 @@ class ProxyDatabase:
 			update= { '$inc': {'seq': 1}}, new=True ).get('seq') - 1
 
 	def store(self, description):
-		description = json.loads(description)
 		db_id = self.collection.find_one(description)
 		if db_id == None:
 			description["_id"] = self.getNextSequence(self.db.counters, \

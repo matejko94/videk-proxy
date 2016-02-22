@@ -10,4 +10,4 @@ services:
 before_script:
   - python videk-proxy.py &
   - sleep 5
-script: python proxy-client.py
+script: python videk-proxy-test.py

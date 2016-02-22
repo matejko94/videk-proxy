@@ -73,7 +73,19 @@ class requestHandler(BaseHTTPRequestHandler):
 		params = parse_qs(url.query)
 
 		if resource == "/reg-s":
-			message = self.sensor.store(content)
+			try:
+				json_table = json.loads(content)
+			except ValueError:
+				print "Broken sensor registration data --> " + str(content)
+				message = "Error: Wrong data format!"
+				self.send_response(200)
+				self.send_header('Content-Length', len(message))
+				self.end_headers()
+				self.wfile.write(message)
+				return
+
+			message = self.sensor.store(json_table)
+
 			self.send_response(200)
 			self.send_header('Content-Length', len(str(message)))
 			self.end_headers()
@@ -81,7 +93,18 @@ class requestHandler(BaseHTTPRequestHandler):
 			return
 
 		if resource == "/reg-t":
-			message = self.table.store(content)
+			try:
+				json_table = json.loads(content)
+			except ValueError:
+				print "Broken table registration data --> " +  str(content)
+				message = "Error: Wrong data format!"
+				self.send_response(200)
+				self.send_header('Content-Length', len(message))
+				self.end_headers()
+				self.wfile.write(message)
+				return
+
+			message = self.table.store(json_table)
 			self.send_response(200)
 			self.send_header('Content-Length', len(str(message)))
 			self.end_headers()
@@ -89,9 +112,23 @@ class requestHandler(BaseHTTPRequestHandler):
 			return
 
 		if resource == "/data":
-			t_id = self.table.get(params["tb"][0])
-			if t_id != "null":
-				tcsv = json.loads(t_id).get("tb")
+			try:
+				table_id = int(params["tb"][0])
+				ts = int(params["ts"][0])
+				lat = float(params["lat"][0])
+				lon = float(params["lon"][0])
+			except ValueError:
+				print "Broken params --> " +  str(params)
+				message = "Error: Wrong params format!"
+				self.send_response(200)
+				self.send_header('Content-Length', len(message))
+				self.end_headers()
+				self.wfile.write(message)
+				return
+
+			tab = self.table.get(table_id)
+			if tab != "null":
+				tcsv = json.loads(tab).get("tb")
 			else:
 				message = "Error: No such table!"
 				self.send_response(200)
@@ -105,8 +142,7 @@ class requestHandler(BaseHTTPRequestHandler):
 			reader = csv.reader(f, delimiter=',')
 			sensor_csv = np.array(list(reader)).T
 
-			m = {"t":params["ts"][0],"lat":params["lat"][0], \
-				"lon":params["lon"][0],"v":""}
+			m = {"t":ts,"lat":lat,"lon":lon,"v":""}
 			m_a = []
 			videk_json = []
 			for t, c in zip(tarray, sensor_csv):
@@ -122,10 +158,19 @@ class requestHandler(BaseHTTPRequestHandler):
 					return
 
 				for sv in c:
-					m["v"] = float(sv)
+					try:
+						m["v"] = float(sv)
+					except ValueError:
+						print "Broken value --> " +  str(sv)
+						message = "Error: Wrong data format!"
+						self.send_response(200)
+						self.send_header('Content-Length', len(message))
+						self.end_headers()
+						self.wfile.write(message)
+						return
+
 					m_a.append(m)
-					m = {"t":params["ts"][0],"lat":params["lat"][0], \
-						"lon":params["lon"][0],"v":""}
+					m = {"t":ts,"lat":lat,"lon":lon,"v":""}
 				sensor["m"] = m_a
 				videk_json.append(sensor)
 				m_a = []
