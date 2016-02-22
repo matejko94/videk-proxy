@@ -8,6 +8,6 @@ install:
 services:
   - mongodb
 before_script:
-  - sudo ./videk-proxy start
+  - sudo bash videk-proxy start
   - sleep 5
 script: python proxy-client.py
