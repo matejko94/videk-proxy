@@ -12,7 +12,7 @@ services:
 before_script:
   - git clone https://github.com/sensorlab/SensorManagementSystem.git
   - cd SensorManagementSystem/server
-  - sudo npm install
+  - npm install
   - nodejs top.js &
   - cd ../..
   - python videk-proxy.py &
