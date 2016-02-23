@@ -1,9 +1,6 @@
-sudo: required
 language: python
 python:
   - "2.7"
-node_js:
-  - "4.3"
 install:
   - pip install requests
   - pip install numpy
@@ -11,11 +8,6 @@ install:
 services:
   - mongodb
 before_script:
-  - git clone https://github.com/sensorlab/SensorManagementSystem.git
-  - cd SensorManagementSystem/server
-  - sudo npm install
-  - node top.js &
-  - cd ../..
   - python videk-proxy.py &
   - sleep 5
 script: python videk-proxy-test.py
