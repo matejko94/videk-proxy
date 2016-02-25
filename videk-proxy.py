@@ -36,7 +36,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 	table = ProxyDatabase("tables")
 
 	def setup(self):
-		self.timeout = 5
+		self.timeout = 10
 		BaseHTTPRequestHandler.setup(self)
 
 	def upload_data(self, cluster, node, sensor_t, \
@@ -80,7 +80,6 @@ class RequestHandler(BaseHTTPRequestHandler):
 		url = urlparse(self.path)
 		resource = url.path
 		params = parse_qs(url.query)
-		print threading.currentThread().getName()
 
 		if resource == "/reg-s":
 			try:

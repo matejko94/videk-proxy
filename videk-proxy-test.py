@@ -3,6 +3,7 @@ import requests
 import socket
 import time
 import threading
+import sys
 from multiprocessing import Process
 
 class BlockingClient:
@@ -19,6 +20,8 @@ class BlockingClient:
 			if resp == "": break
 			print resp,
 		s.close()
+		print "\nFinished mocking hanging HTTP POST request."
+		sys.stdout.flush()
 
 class VidekProxyTests(unittest.TestCase):
 
