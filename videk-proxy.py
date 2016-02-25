@@ -3,8 +3,10 @@
 import json
 import csv
 import StringIO
+import threading
 import numpy as np
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from SocketServer import ThreadingMixIn
 from urlparse import urlparse, parse_qs
 from videk_rest_client import Videk
 from datetime import datetime
@@ -17,7 +19,8 @@ videk_token = "yc92PyLkeBUyqN1msDan6YOCl+IT2u9M"
 def main():
 
 	try:
-		server = HTTPServer(('', server_port), requestHandler)
+		#server = ThreadedHTTPServer(('', server_port), RequestHandler)
+		server = HTTPServer(('', server_port), RequestHandler)
 		print "Started http server on port " + str(server_port)
 		server.serve_forever()
 
@@ -25,7 +28,15 @@ def main():
 		print "Shutting down the server"
 		server.socket.close()
 
-class requestHandler(BaseHTTPRequestHandler):
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+	pass
+
+class RequestHandler(BaseHTTPRequestHandler):
+
+
+	#def setup(self):
+	#	self.timeout = 10
+	#	BaseHTTPRequestHandler.setup(self)
 
 	sensor = ProxyDatabase("sensors")
 	table = ProxyDatabase("tables")
@@ -71,6 +82,8 @@ class requestHandler(BaseHTTPRequestHandler):
 		url = urlparse(self.path)
 		resource = url.path
 		params = parse_qs(url.query)
+		print threading.currentThread().getName()
+		print str(self)
 
 		if resource == "/reg-s":
 			try:

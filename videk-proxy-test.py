@@ -4,9 +4,11 @@ import requests
 class VidekProxyTests(unittest.TestCase):
 
 	def setUp(self):
-		self.url_s = "http://localhost:8080/reg-s"
-		self.url_t = "http://localhost:8080/reg-t"
-		self.url_d = "http://localhost:8080/data"
+		#url = "http://194.249.173.73:11088"
+		url = "http://LOCALHOST:8080"
+		self.url_s = url + "/reg-s"
+		self.url_t = url + "/reg-t"
+		self.url_d = url + "/data"
 
 	def test_correct_sensor_registration(self):
 		correct_sensor = '{"c":"Beep","n":"BeepMislinjaX","st":"SHT21", \
