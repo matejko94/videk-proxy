@@ -50,6 +50,9 @@ def send_data(url, table, data):
 	print d.text
 	print d.headers
 
-send_data(url_d, table_id_1, test_data_1)
 send_data(url_d, table_id_1, test_data_2)
 send_data(url_d, table_id_1, test_data_3)
+
+while 1:
+	send_data(url_d, table_id_1, test_data_1)
+	time.sleep(1)

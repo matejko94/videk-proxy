@@ -3,10 +3,10 @@
 import json
 import csv
 import StringIO
-import threading
+import os
 import numpy as np
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-from SocketServer import ThreadingMixIn
+from SocketServer import ForkingMixIn
 from urlparse import urlparse, parse_qs
 from videk_rest_client import Videk
 from datetime import datetime
@@ -27,7 +27,7 @@ def main():
 		print "Shutting down the server"
 		server.socket.close()
 
-class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+class ThreadedHTTPServer(ForkingMixIn, HTTPServer):
 	pass
 
 class RequestHandler(BaseHTTPRequestHandler):
@@ -80,6 +80,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 		url = urlparse(self.path)
 		resource = url.path
 		params = parse_qs(url.query)
+		print "PID: " + str(os.getpid())
 
 		if resource == "/reg-s":
 			try:
