@@ -22,8 +22,8 @@ class ProxyDatabase:
 		db = client.proxy
 		db_id = db[self.collection].find_one(description)
 		if db_id == None:
-			description["_id"] = self.getNextSequence( \
-				db[self.collection].counters, self.counter_id)
+			description["_id"] = self.getNextSequence(db.counters, \
+				self.counter_id)
 			db_id = db[self.collection].insert_one(description).inserted_id
 		else:
 			db_id = db_id.get("_id")
