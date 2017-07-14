@@ -2,11 +2,12 @@ import requests
 import json
 import time
 
-url_s = "http://localhost:8080/reg-s"
-url_t = "http://localhost:8080/reg-t"
-url_d = "http://localhost:8080/data"
 
-sensor_1 = {"c":"Beep","n":"BeepMislinjaX","st":"SHT21", \
+url_s = "http://194.249.173.73:11088/reg-s"
+url_t = "http://194.249.173.73:11088/reg-t"
+url_d = "http://194.249.173.73:11088/data"
+
+sensor_1 = {"c":"A","n":"BeepMislinjaX","st":"SHT21", \
 	"sq":"temperature","su":"degC"}
 
 sensor_2 = {"c":"Beep","n":"BeepMislinjaX","st":"SHT22", \
@@ -42,17 +43,18 @@ test_data_1 = "1,2,3\n4,5,6\n7,8,9.122"
 test_data_2 = "AT#HTTPCFG?.AT#HTTPCFG?.AT#HTTPCFG?.AT#H"
 test_data_3 = "0.1,nan,0.2"
 
-def send_data(url, table, data):
-	local_time = str(int(time.time()))
-	url = url + "?tb=" + table + "&ts=" + local_time + \
-		"&lat=46.056947" + "&lon=14.505751"
+def send_data(url, table, data,time,lat,lon):
+	url = url + "?tb=" + table + "&ts=" + str(time) +"&lat="+str(lat) + "&lon="+str(lon)
 	d = requests.post(url, data=data)
 	print d.text
 	print d.headers
 
-send_data(url_d, table_id_1, test_data_2)
-send_data(url_d, table_id_1, test_data_3)
+local_time = str(int(time.time()))
+lat=46.056947
+lon=14.505751
+send_data(url_d, table_id_1, test_data_2,local_time,lat,lon)
+send_data(url_d, table_id_1, test_data_3,local_time,lat,lon)
 
 while 1:
-	send_data(url_d, table_id_1, test_data_1)
+	send_data(url_d, table_id_1, test_data_1,local_time,lat,lon)
 	time.sleep(1)
